@@ -1,23 +1,22 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import Dropzone from './Dropzone';
 
 function App() {
+  const [data, setData] = useState([]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Text File to Excel File Converter</h1>
+      <Dropzone setData={setData} />
+
+      {/* Display the uploaded data */}
+      {data.length > 0 && (
+        <div className="uploaded-data">
+          <h3>Uploaded Data:</h3>
+          <pre>{JSON.stringify(data, null, 2)}</pre>
+        </div>
+      )}
     </div>
   );
 }
