@@ -1,38 +1,158 @@
-.App {
+/* Background color and font style */
+
+body {
+  margin: 0;
+  margin-top: 100px;
+   padding-bottom: 20px;
+   font-family: 'Nunito', sans-serif;
+   color: rgb(0, 0, 0);
+   text-align: center;
+   background:rgb(255, 236, 236)
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+h2 {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Upload button CSS */
+
+.dropzone input[type="file"] {
+  cursor: pointer;
+    border-radius: 0.5em;
+    color: #fff;
+    background: /*linear-gradient(to right, #e79191, #facccc)*/ #c2c2c2;
+    border: 0;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 13px;
+    box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);
+}
+
+.dropzone input[type="file"]:hover {
+  background-color: #a19f9f;
+}
+
+.dropzone input[type="file"]:active {
+  background-color: #ccc;
+}
+
+input[type="file"] {
+  position: relative;
+}
+
+input[type="file"]::file-selector-button {
+  width: 136px;
+  color: transparent;
+}
+
+/* Faked label styles and icon */
+input[type="file"]::before {
+  position: absolute;
+  pointer-events: none;
+  top: 20px;
+  left: 62px;
+  height: 20px;
+  width: 20px;
+  content: "";
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230964B0'%3E%3Cpath d='M18 15v3H6v-3H4v3c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-3h-2zM7 9l1.41 1.41L11 7.83V16h2V7.83l2.59 2.58L17 9l-5-5-5 5z'/%3E%3C/svg%3E");
+}
+
+input[type="file"]::after {
+  position: absolute;
+  pointer-events: none;
+  height: 20px;
+  width: 20px;
+  color: #0964b0;
+  content: "Upload File";
+  top: 23px;
+  left: 85px;
+}
+
+/* ------- From Step 1 ------- */
+
+/* file upload button */
+input[type="file"]::file-selector-button {
+  border-radius: 4px;
+  padding: 0 16px;
+  height: 40px;
+  cursor: pointer;
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.05);
+  margin-right: 16px;
+  transition: background-color 200ms;
+}
+
+/* file upload button hover state */
+input[type="file"]::file-selector-button:hover {
+  background-color: #f3f4f6;
+}
+
+/* file upload button active state */
+input[type="file"]::file-selector-button:active {
+  background-color: #e5e7eb;
+}
+
+/* CSS for the table */
+table {
+  width: 50%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  margin-left: 25%;
+  margin-right: 25%;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+th {
+  background-color: #f2f2f2;
+  font-weight: bold;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* CSS for the input form and download button */
+label {
+  font-weight: bold;
+  display: block;
+  margin-top: 20px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+input[type=text] {
+	appearance: none;
+	border: none;
+	outline: none;
+	border-bottom: .2em solid #007bff;
+	background: rgba(#E91E63, .2);
+	border-radius: 0.2em 0.2em 0 0;
+	padding: .4em;
+  margin-left: 1%;
+  background-color: #f0f0f0;
+	color: #979797;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+button {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+  border-radius: 0.5em;
+  &:hover, &:focus, &:active {
+		background-color: #E91E63;
+		color: #fff;
+	}
 }
