@@ -1,5 +1,3 @@
-/* Background color and font style */
-
 body {
   margin: 0;
   margin-top: 100px;
@@ -22,7 +20,7 @@ h2 {
 
 /* Upload button CSS */
 
-.dropzone input[type="file"] {
+.TextToExcel input[type="file"] {
   cursor: pointer;
     border-radius: 0.5em;
     color: #fff;
@@ -37,11 +35,11 @@ h2 {
     box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);
 }
 
-.dropzone input[type="file"]:hover {
+.TextToExcel input[type="file"]:hover {
   background-color: #a19f9f;
 }
 
-.dropzone input[type="file"]:active {
+.TextToExcel input[type="file"]:active {
   background-color: #ccc;
 }
 
@@ -77,8 +75,6 @@ input[type="file"]::after {
   left: 85px;
 }
 
-/* ------- From Step 1 ------- */
-
 /* file upload button */
 input[type="file"]::file-selector-button {
   border-radius: 4px;
@@ -109,7 +105,6 @@ input[type="file"]::file-selector-button:active {
   align-items: center;
 }
 
-/* Add any additional styling for your table if needed */
 table {
   border-collapse: collapse;
   width: 80%; 
@@ -162,6 +157,7 @@ button {
 	}
 }
 
+/*CSS for Error message*/
 .error {
   font-weight: bold;
   font-family: Arial, sans-serif; /* Use your preferred font-family */
