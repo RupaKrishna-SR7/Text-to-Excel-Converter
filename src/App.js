@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
-import Dropzone from './Dropzone';
+import Dropzone from './TextToExcel';
 
 function App() {
   const [data, setData] = useState([]);
@@ -8,7 +8,7 @@ function App() {
   return (
     <div className="App">
       <h1>Text File to Excel File Converter</h1>
-      <Dropzone setData={setData} />
+      <TextToExcel setData={setData} />
 
       {/* Display the uploaded data */}
       {data.length > 0 && (
