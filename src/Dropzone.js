@@ -6,35 +6,54 @@ const Dropzone = ({ setData }) => {
   const [fileNameWithoutExtension, setFileNameWithoutExtension] = useState(
     'output'
   ); // Default file name without extension
+  const [error, setError] = useState(null);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
 
     if (file) {
-      const reader = new FileReader();
+      if (file.name.endsWith('.txt')) {
+        setError(null);
+        const reader = new FileReader();
 
-      reader.onload = (e) => {
-        const content = e.target.result;
-        const data = processTextToExcel(content);
-        setExcelData(data);
-      };
+        reader.onload = (e) => {
+          const content = e.target.result;
 
-      reader.readAsText(file);
+          // Check if the content is empty
+          if (content.trim() === '') {
+            setError('Error: The uploaded file is empty');
+          } else {
+            const data = processTextToExcel(content);
+            setExcelData(data);
+          }
+        };
+
+        reader.readAsText(file);
+      } else {
+        setError('Error: Please upload a .txt file');
+      }
     }
   };
 
   const processTextToExcel = (textData) => {
     const rows = textData.split('\n');
-    const excelData = rows.map((row) => row.split(','));
+    const excelData = rows
+      .map((row) => row.split(','))
+      .filter((row) => row.join('').trim() !== ''); // Exclude empty lines or lines with only commas
     return excelData;
   };
 
   const handleDownloadClick = () => {
-    if (excelData) {
+    if (!excelData) {
+      setError('Please upload a .txt file before downloading');
+    } else if (!fileNameWithoutExtension.trim()) {
+      setError('Error: File name cannot be blank');
+    } else {
+      setError(null);
       const ws = XLSX.utils.aoa_to_sheet(excelData);
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-      const fileExtension = 'xlsx'; // You can change the extension if needed
+      const fileExtension = 'xlsx'; // You can change the extension if needed 
       const fullFileName = `${fileNameWithoutExtension}.${fileExtension}`;
       XLSX.writeFile(wb, fullFileName);
     }
@@ -51,7 +70,7 @@ const Dropzone = ({ setData }) => {
         <input type="file" accept=".txt" onChange={handleFileChange} />
 
         {excelData && (
-          <div>
+          <div className="table-container">
             <table>
               <thead>
                 <tr>
@@ -73,18 +92,20 @@ const Dropzone = ({ setData }) => {
           </div>
         )}
 
+        {error && <p className="error">{error}</p>}
+
         {excelData && (
-         <div>
-         <label>
-           Enter a name for the file : 
-           <input
-             type="text"
-             value={fileNameWithoutExtension}
-             onChange={handleFileNameChange}
-           />
-         </label>
-         <button onClick={handleDownloadClick}>Download</button>
-       </div>
+          <div>
+            <label>
+              *Enter a name for the file :
+              <input
+                type="text"
+                value={fileNameWithoutExtension}
+                onChange={handleFileNameChange}
+              />
+            </label>
+            <button onClick={handleDownloadClick}>Download</button>
+          </div>
         )}
       </main>
     </div>
