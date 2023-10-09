@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as XLSX from 'xlsx';
 
-const Dropzone = ({ setData }) => {
+const TextToExcel = ({ setData }) => {
   const [excelData, setExcelData] = useState(null);
   const [fileNameWithoutExtension, setFileNameWithoutExtension] = useState(
     'output'
@@ -112,4 +112,4 @@ const Dropzone = ({ setData }) => {
   );
 };
 
-export default Dropzone;
+export default TextToExcel;
