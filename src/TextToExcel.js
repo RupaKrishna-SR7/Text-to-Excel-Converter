@@ -64,7 +64,7 @@ const TextToExcel = ({ setData }) => {
   };
 
   return (
-    <div className="dropzone">
+    <div className="TextToExcel">
       <main>
         <h2>Upload a .txt file</h2>
         <input type="file" accept=".txt" onChange={handleFileChange} />
