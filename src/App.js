@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
-import Dropzone from './TextToExcel';
+import TextToExcel from './TextToExcel';
 
 function App() {
   const [data, setData] = useState([]);
