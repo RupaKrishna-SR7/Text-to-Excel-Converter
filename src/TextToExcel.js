@@ -1,37 +1,120 @@
+
 import React, { useState } from 'react';
 import * as XLSX from 'xlsx';
+import { log } from './logger'; // Import the logger
 
-const TextToExcel = ({ setData }) => {
-  const [excelData, setExcelData] = useState(null);
-  const [fileNameWithoutExtension, setFileNameWithoutExtension] = useState(
-    'output'
-  ); // Default file name without extension
+const TextToExcel = () => {
+  const [files, setFiles] = useState([]);
   const [error, setError] = useState(null);
+  const [uploadMessage, setUploadMessage] = useState(null);
+  const [excelData, setExcelData] = useState(null);
+  const [showPreviewIndex, setShowPreviewIndex] = useState(-1);
 
   const handleFileChange = (event) => {
-    const file = event.target.files[0];
+    const newFiles = Array.from(event.target.files);
 
-    if (file) {
-      if (file.name.endsWith('.txt')) {
-        setError(null);
+    if (newFiles.length > 0) {
+      for (const file of newFiles) {
+        // Check if a file with the same name already exists in the array
+        const isDuplicate = files.some((existingFile) => existingFile.file.name === file.name);
+
+        if (isDuplicate) {
+          setError(`File ${file.name} has already been uploaded.`);
+        } else if (file.size === 0) {
+          setError(`File ${file.name} is empty. Please upload a file with content.`);
+        } else if (file.name.split('.').pop() !== 'txt') {
+          setError(`File ${file.name} is not a .txt file. Please upload .txt files only.`);
+        } else {
+          setError(null);
+          setFiles((prevFiles) => [...prevFiles, { file, newName: '' }]);
+          setUploadMessage('File uploaded successfully. To add more files, click on the upload button again.');
+
+          // Reset the file input field
+          const fileInput = event.target;
+          fileInput.value = '';
+
+          // Log the successful upload
+          log(`File ${file.name} uploaded successfully.`);
+        }
+      }
+    }
+  };
+
+  const togglePreview = (index) => {
+    if (showPreviewIndex === index) {
+      setShowPreviewIndex(-1);
+      setExcelData(null);
+    } else {
+      setShowPreviewIndex(index);
+      const file = files[index].file;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target.result;
+        setExcelData(content);
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  const handleRenameFile = (index, newName) => {
+    setFiles((prevFiles) => {
+      const updatedFiles = [...prevFiles];
+      updatedFiles[index].newName = newName;
+      return updatedFiles;
+    });
+  };
+
+  const handleClearRename = (index) => {
+    setFiles((prevFiles) => {
+      const updatedFiles = [...prevFiles];
+      updatedFiles[index].newName = '';
+      return updatedFiles;
+    });
+  };
+
+  const handleRemoveFile = (index) => {
+    setFiles((prevFiles) => {
+      const updatedFiles = [...prevFiles];
+      updatedFiles.splice(index, 1);
+      return updatedFiles;
+    });
+
+    // Reset the file input field
+    const fileInput = document.querySelector('input[type="file"]');
+    fileInput.value = null;
+
+    // Log the file removal
+    log(`File ${files[index].file.name} removed.`);
+  };
+
+  const handleDownloadClick = () => {
+    if (files.length === 0) {
+      setError('Please upload one or more .txt files before downloading.');
+    } else {
+      setError(null);
+
+      files.forEach((fileObj, index) => {
+        const file = fileObj.file;
         const reader = new FileReader();
-
         reader.onload = (e) => {
           const content = e.target.result;
+          const data = processTextToExcel(content);
 
-          // Check if the content is empty
-          if (content.trim() === '') {
-            setError('Error: The uploaded file is empty');
-          } else {
-            const data = processTextToExcel(content);
-            setExcelData(data);
-          }
+          const wb = XLSX.utils.book_new();
+          const ws = XLSX.utils.aoa_to_sheet(data);
+          XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+          const fileExtension = 'xlsx';
+
+          const fileNameWithoutExtension = fileObj.newName || file.name.replace(/\.[^/.]+$/, '');
+          const fullFileName = `${fileNameWithoutExtension}.${fileExtension}`;
+          XLSX.writeFile(wb, fullFileName);
+
+          // Log the file download
+          log(`File ${fullFileName} downloaded.`);
         };
 
         reader.readAsText(file);
-      } else {
-        setError('Error: Please upload a .txt file');
-      }
+      });
     }
   };
 
@@ -39,74 +122,85 @@ const TextToExcel = ({ setData }) => {
     const rows = textData.split('\n');
     const excelData = rows
       .map((row) => row.split(','))
-      .filter((row) => row.join('').trim() !== ''); // Exclude empty lines or lines with only commas
+      .filter((row) => row.join('').trim() !== '');
     return excelData;
-  };
-
-  const handleDownloadClick = () => {
-    if (!excelData) {
-      setError('Please upload a .txt file before downloading');
-    } else if (!fileNameWithoutExtension.trim()) {
-      setError('Error: File name cannot be blank');
-    } else {
-      setError(null);
-      const ws = XLSX.utils.aoa_to_sheet(excelData);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-      const fileExtension = 'xlsx'; // You can change the extension if needed 
-      const fullFileName = `${fileNameWithoutExtension}.${fileExtension}`;
-      XLSX.writeFile(wb, fullFileName);
-    }
-  };
-
-  const handleFileNameChange = (event) => {
-    setFileNameWithoutExtension(event.target.value);
   };
 
   return (
     <div className="TextToExcel">
       <main>
-        <h2>Upload a .txt file</h2>
-        <input type="file" accept=".txt" onChange={handleFileChange} />
+        <h2>Upload .txt files</h2>
+        <input type="file" accept=".txt" multiple onChange={handleFileChange} />
 
-        {excelData && (
-          <div className="table-container">
-            <table>
-              <thead>
-                <tr>
-                  {excelData[0].map((cell, index) => (
-                    <th key={index}>{cell}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {excelData.slice(1).map((row, rowIndex) => (
-                  <tr key={rowIndex}>
-                    {row.map((cell, cellIndex) => (
-                      <td key={cellIndex}>{cell}</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        {uploadMessage && <p className="upload-message">{uploadMessage}</p>}
 
-        {error && <p className="error">{error}</p>}
-
-        {excelData && (
+        {files.length > 0 && (
           <div>
-            <label>
-              *Enter a name for the file :
-              <input
-                type="text"
-                value={fileNameWithoutExtension}
-                onChange={handleFileNameChange}
-              />
-            </label>
-            <button onClick={handleDownloadClick}>Download</button>
+            <h3>Uploaded Files:</h3>
+            <ul>
+              {files.map((fileObj, index) => (
+                <li key={index}>
+                  <h4>{fileObj.file.name.replace(/\.[^/.]+$/, '')}</h4>
+                  <label>
+                    *Enter a name for the file :
+                    <input
+                      type="text"
+                      value={fileObj.newName}
+                      placeholder={`File ${index + 1}`}
+                      onChange={(e) => handleRenameFile(index, e.target.value)}
+                    />
+                  </label>
+                  <button onClick={() => handleClearRename(index)}>Clear</button>
+                  <button onClick={() => handleRemoveFile(index)}>Remove</button>
+                  <button onClick={() => togglePreview(index)}>
+                    {showPreviewIndex === index ? 'Hide Preview' : 'Preview'}
+                  </button>
+                  {showPreviewIndex === index && (
+                    <div className="preview">
+                      {excelData && (
+                        <div className="table-container">
+                          <table>
+                            <thead>
+                              <tr>
+                                {excelData
+                                  .split('\n')[0]
+                                  .split(',')
+                                  .map((column, columnIndex) => (
+                                    <th key={columnIndex}>{column}</th>
+                                  ))}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {excelData.split('\n').map((row, rowIndex) => {
+                                const columns = row.split(',').map((column) => column.trim());
+                                if (columns.some((column) => column !== '')) {
+                                  return (
+                                    <tr key={rowIndex}>
+                                      {columns.map((column, columnIndex) => (
+                                        <td key={columnIndex}>{column}</td>
+                                      ))}
+                                    </tr>
+                                  );
+                                }
+                                return null; // Exclude rows with only commas
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
           </div>
         )}
+
+        {error && <p className="error" style={{ color: 'red' }}>{error}</p>}
+
+        <div>
+          <button onClick={handleDownloadClick}>Download</button>
+        </div>
       </main>
     </div>
   );
