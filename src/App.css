@@ -1,11 +1,12 @@
+/* Background color and font style */
 body {
   margin: 0;
-  margin-top: 100px;
-   padding-bottom: 20px;
-   font-family: 'Nunito', sans-serif;
-   color: rgb(0, 0, 0);
-   text-align: center;
-   background:rgb(235, 235, 235)
+  padding-top: 100px;
+  padding-bottom: 20px;
+  font-family: 'Nunito', sans-serif;
+  color: rgb(0, 0, 0);
+  text-align: center;
+  background: rgb(235, 235, 235);
 }
 
 h1 {
@@ -19,27 +20,26 @@ h2 {
 }
 
 /* Upload button CSS */
-
-.TextToExcel input[type="file"] {
+input[type="file"] {
   cursor: pointer;
-    border-radius: 0.5em;
-    color: #fff;
-    background: /*linear-gradient(to right, #e79191, #facccc)*/ #c2c2c2;
-    border: 0;
-    padding-left: 40px;
-    padding-right: 40px;
-    padding-bottom: 10px;
-    padding-top: 10px;
-    font-family: 'Ubuntu', sans-serif;
-    font-size: 13px;
-    box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);
+  border-radius: 0.5em;
+  color: #fff;
+  background: #c2c2c2;
+  border: 0;
+  padding-left: 40px;
+  padding-right: 40px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 13px;
+  box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);
 }
 
-.TextToExcel input[type="file"]:hover {
+input[type="file"]:hover {
   background-color: #a19f9f;
 }
 
-.TextToExcel input[type="file"]:active {
+input[type="file"]:active {
   background-color: #ccc;
 }
 
@@ -107,7 +107,7 @@ input[type="file"]::file-selector-button:active {
 
 table {
   border-collapse: collapse;
-  width: 80%; 
+  width: 80%;
   margin-top: 20px;
 }
 
@@ -129,17 +129,19 @@ label {
   margin-top: 20px;
 }
 
-input[type=text] {
-	appearance: none;
-	border: none;
-	outline: none;
-	border-bottom: .2em solid #007bff;
-	background: rgba(#E91E63, .2);
-	border-radius: 0.2em 0.2em 0 0;
-	padding: .4em;
-  margin-left: 1%;
-  background-color: #f0f0f0;
-	color: #979797;
+/* Input field type "txt" and buttons on the same line */
+.input-and-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+}
+
+/* Buttons on the same line with a gap */
+.button-group {
+  display: flex;
+  align-items: center;
 }
 
 button {
@@ -157,10 +159,68 @@ button {
 	}
 }
 
-/*CSS for Error message*/
 .error {
   font-weight: bold;
-  font-family: Arial, sans-serif; /* Use your preferred font-family */
+  font-family: Arial, sans-serif;
   color: red;
 }
 
+
+/* Remove list bullets */
+ul {
+  list-style-type: none;
+}
+
+/* Style each file box with a different color */
+li {
+  background: #f0f0f0; /* Light gray background */
+  margin: 50px;
+  padding-top: 20px;
+  padding-bottom: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Style rename input, clear, remove, and preview buttons */
+li input[type="text"] {
+  appearance: none;
+  border: none;
+  outline: none;
+  border-bottom: .2em solid #007bff;
+  background: rgba(#E91E63, .2);
+  border-radius: 0.2em 0.2em 0 0;
+  padding: .4em;
+  background-color: #f0f0f0;
+  color: #979797;
+  margin-right: 10px;
+  margin-left: 1%;
+  &:hover, &:focus, &:active {
+		border-bottom: .2em solid #E91E63;
+    color: #5f5f5f;
+	}
+}
+
+li button {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+  border-radius: 0.5em;
+  margin-right: 7.5px;
+  &:hover, &:focus, &:active {
+		background-color: #E91E63;
+		color: #fff;
+	}
+}
+
+/* Style the preview section */
+.preview {
+  background: #fff; /* White background */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  margin: 20px;
+}
